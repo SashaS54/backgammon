@@ -1,9 +1,11 @@
 import pygame
 
+import constants
+
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((800, 600))
+    screen = pygame.display.set_mode((constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT))
     close = False
 
     while not close:
