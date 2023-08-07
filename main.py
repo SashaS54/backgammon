@@ -15,7 +15,10 @@ def main():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                break
+                pygame.quit()
+            if event.type == pygame.KEYDOWN:
+                keyName = pygame.key.name(event.key)
+                print(f"Yoo! {keyName.upper()} just got pressed.")
         pygame.display.update()
 
 
