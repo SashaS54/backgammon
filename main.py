@@ -7,16 +7,15 @@ def main():
     pygame.init()
     pygame.display.set_caption("Backgammon")
     screen_surface = pygame.display.set_mode((constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT))
-    close = False
     image = pygame.image.load("assets/sashki.png")
 
-    while not close:
+    while True:
         screen_surface.fill(constants.BACKGROUND_COLOR)
         screen_surface.blit(image, (0, 0))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                close = True
+                break
         pygame.display.update()
 
 
