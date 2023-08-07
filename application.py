@@ -8,8 +8,8 @@ class Application:
         pygame.display.set_caption("Backgammon")
 
         self.running: bool = True
-        self.screenSurface: pygame.surface = pygame.display.set_mode((constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT))
-        self.imageSurface: pygame.Surface = pygame.image.load("assets/sashki.png")
+        self.screenSurface: pygame.SurfaceType = pygame.display.set_mode((constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT))
+        self.imageSurface: pygame.SurfaceType = pygame.image.load("assets/sashki.png")
 
     def start(self):
         while self.running:
