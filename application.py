@@ -31,9 +31,10 @@ class Application:
             self.loadGame(save)
 
     def start(self):
-        self.clock.tick(60)
 
         while self.running:
+            self.clock.tick(60)
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.saveGame()

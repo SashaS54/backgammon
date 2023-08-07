@@ -13,7 +13,7 @@ class Dice:
 
         self._elapsedTime: int = 1
         self._iterations: int = 1
-        self._timeDelay: int = 100
+        self._timeDelay: float = 0.1
         self._reset: bool = True
 
         self.dropped: bool = False
@@ -55,7 +55,7 @@ class Dice:
         self._inProcess = True
 
     def render(self, bgSurface: pygame.Surface, deltaTime: int):
-        self._elapsedTime += deltaTime / 60
+        self._elapsedTime += deltaTime / 1000
 
         bgSurface.blit(self._images[self._rolls[0] - 1], constants.DICE_POSITION)
         bgSurface.blit(self._images[self._rolls[1] - 1], (constants.DICE_POSITION[0] + constants.DICE_LENGTH,
@@ -68,12 +68,12 @@ class Dice:
                     self._reset = False
                 if self._elapsedTime >= self._timeDelay:
                     self._roll()
-                    self._timeDelay += 100
+                    self._timeDelay += 0.05
                     self._iterations += 1
                     self._elapsedTime = 0
             else:
                 self._reset = True
-                self._timeDelay = 100
+                self._timeDelay = 0.1
                 self._iterations = 0
                 self._inProcess = False
                 self._canReadRolls = True
