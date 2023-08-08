@@ -1,5 +1,6 @@
 import pygame
 import constants
+from color import Color
 
 
 class Application:
@@ -13,7 +14,7 @@ class Application:
 
     def start(self):
         while self.running:
-            self.screenSurface.fill(constants.BACKGROUND_COLOR)
+            self.screenSurface.fill(Color.Background.toTuple())
             self.screenSurface.blit(self.imageSurface, (0, 0))
 
             for event in pygame.event.get():
