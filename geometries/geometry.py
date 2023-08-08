@@ -8,5 +8,6 @@ class Geometry(ABC):
     def render(self, surface: pygame.Surface):
         pass
 
+    @abstractmethod
     def __init__(self, color: Color):
         self.color: Color = color
