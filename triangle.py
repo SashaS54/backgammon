@@ -12,7 +12,7 @@ class Triangle:
         self._geometry = Polygon(self.calculateGeometryPoints(), self.color)
 
     def calculateGeometryPoints(self) -> Tuple[pygame.Vector2, pygame.Vector2, pygame.Vector2]:
-        side: bool = False if self.index < 12 else True
+        side: bool = self.index > 11
         borderOffset: float = constants.BORDER_WIDTH + (constants.BORDER_WIDTH * 2 * (5 < self.index < 12 or self.index > 17))
         triangleHeight: float = constants.TRIANGLES_HEIGHT + constants.BORDER_WIDTH if not side \
             else constants.WINDOW_HEIGHT - constants.TRIANGLES_HEIGHT - constants.BORDER_WIDTH
