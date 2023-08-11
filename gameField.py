@@ -4,6 +4,7 @@ from geometries.rectangle import Rectangle
 from triangle import Triangle
 import constants
 from color import Color
+from checker import Checker
 
 
 class GameField:
@@ -18,6 +19,9 @@ class GameField:
 
         self.thatCubeShit: Rectangle = Rectangle(pygame.Vector2(constants.WINDOW_WIDTH * 0.9, 0),
                                                  constants.WINDOW_WIDTH * 0.1, constants.WINDOW_HEIGHT, Color.Blue)
+
+        self.checkers = [Checker(12, 2, True), Checker(0, 1, True), Checker(0, 2, True), Checker(1, 0, False),
+                         Checker(1, 1, False), Checker(1, 2, False)]
 
     def createField(self, isRight: bool) -> Rectangle:
         return Rectangle(pygame.Vector2(constants.FIELD_WIDTH * isRight, 0), constants.FIELD_WIDTH,
@@ -46,3 +50,6 @@ class GameField:
 
         for triangle in self.triangles:
             triangle.render(bgSurface)
+
+        for checker in self.checkers:
+            checker.render(bgSurface)
