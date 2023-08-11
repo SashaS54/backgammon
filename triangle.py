@@ -8,7 +8,7 @@ from geometries.polygon import Polygon
 class Triangle:
     def __init__(self, index: int):
         self.index: int = index
-        self.color: Color = Color(71, 71, 71) if index % 2 == 0 else Color(15, 15, 15)
+        self.color: Color = Color(71, 71, 71) if index % 2 == 0 else Color(40, 40, 40)
         self._geometry = Polygon(self.calculateGeometryPoints(), self.color)
 
     def calculateGeometryPoints(self) -> Tuple[pygame.Vector2, pygame.Vector2, pygame.Vector2]:
