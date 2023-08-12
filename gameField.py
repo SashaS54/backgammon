@@ -12,8 +12,10 @@ class GameField:
         self.leftField: Rectangle = self.createField(False)
         self.rightField: Rectangle = self.createField(True)
 
-        self.leftFieldBorders: Tuple[Rectangle, Rectangle, Rectangle, Rectangle] = self.createFieldBorders(self.leftField)
-        self.rightFieldBorders: Tuple[Rectangle, Rectangle, Rectangle, Rectangle] = self.createFieldBorders(self.rightField)
+        self.leftFieldBorders: Tuple[Rectangle, Rectangle, Rectangle, Rectangle] = self.createFieldBorders(
+            self.leftField)
+        self.rightFieldBorders: Tuple[Rectangle, Rectangle, Rectangle, Rectangle] = self.createFieldBorders(
+            self.rightField)
 
         self.triangles: List[Triangle] = [Triangle(i) for i in range(24)]
 
@@ -36,6 +38,21 @@ class GameField:
                           constants.BORDER_WIDTH, field.height, Color.BorderColor),
                 Rectangle(pygame.Vector2(field.point.x, field.point.y + field.height - constants.BORDER_WIDTH),
                           field.width, constants.BORDER_WIDTH, Color.BorderColor))
+
+    def getTopChecker(self, index: int) -> Checker | None:
+        result: Checker | None = None
+
+        height: int = 0
+        for checker in self.checkers:
+            if checker.index != index:
+                continue
+            if checker.height < height:
+                continue
+
+            result = checker
+            height = checker.height
+
+        return result
 
     def render(self, bgSurface: pygame.Surface):
         self.leftField.render(bgSurface)

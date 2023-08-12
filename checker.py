@@ -10,6 +10,10 @@ class Checker(Circle):
         self._index = index
         self.height = height
 
+        self.selected: bool = False
+        self._selectionShape: Circle = Circle(self.calculateGeometryCenter(), constants.TRIANGLES_BASE_LENGTH / 1.85,
+                                              Color(240, 17, 188))
+
         super().__init__(self.calculateGeometryCenter(), constants.TRIANGLES_BASE_LENGTH / 2,
                          Color.White if isWhite else Color.Black)
 
@@ -29,3 +33,8 @@ class Checker(Circle):
         return pygame.Vector2(
             self.index % 12 * constants.TRIANGLES_BASE_LENGTH + constants.TRIANGLES_BASE_LENGTH / 2 + borderOffset,
             constants.WINDOW_HEIGHT * side + (constants.BORDER_WIDTH + heightOffset) * (1 - 2 * side))
+
+    def render(self, surface: pygame.Surface):
+        if self.selected:
+            self._selectionShape.render(surface)
+        super().render(surface)
