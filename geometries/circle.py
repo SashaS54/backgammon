@@ -12,3 +12,7 @@ class Circle(Geometry):
 
     def render(self, surface: pygame.Surface):
         pygame.draw.circle(surface, self.color.toTuple(), self.center, self.radius)
+
+    def intersects(self, point: pygame.Vector2) -> bool:
+        return self.center.x - self.radius <= point.x <= self.center.x + self.radius and\
+               self.center.y - self.radius <= point.y <= self.center.y + self.radius

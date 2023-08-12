@@ -13,3 +13,7 @@ class Rectangle(Geometry):
 
     def render(self, surface: pygame.Surface):
         pygame.draw.rect(surface, self.color.toTuple(), pygame.Rect(self.point.x, self.point.y, self.width, self.height))
+
+    def intersects(self, point: pygame.Vector2) -> bool:
+        return self.point.x <= point.x <= self.point.x + self.width and\
+            self.point.y <= point.y <= self.point.y + self.height

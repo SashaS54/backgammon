@@ -15,3 +15,7 @@ class Ellipse(Geometry):
         x: float = self.center.x - self.width / 2
         y: float = self.center.y - self.height / 2
         pygame.draw.ellipse(surface, self.color.toTuple(), pygame.Rect(x, y, self.width, self.height))
+
+    def intersects(self, point: pygame.Vector2) -> bool:
+        return (((point.x - self.center) ** 2) / (self.width / 2 ** 2) +
+                ((point.y - self.center.y) ** 2) / (self.height / 2 ** 2)) <= 1
