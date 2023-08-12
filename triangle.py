@@ -5,11 +5,11 @@ from color import Color
 from geometries.polygon import Polygon
 
 
-class Triangle:
+class Triangle(Polygon):
     def __init__(self, index: int):
         self.index: int = index
-        self.color: Color = Color(71, 71, 71) if index % 2 == 0 else Color(40, 40, 40)
-        self._geometry = Polygon(self.calculateGeometryPoints(), self.color)
+
+        super().__init__(self.calculateGeometryPoints(), Color(71, 71, 71) if index % 2 == 0 else Color(40, 40, 40))
 
     def calculateGeometryPoints(self) -> Tuple[pygame.Vector2, pygame.Vector2, pygame.Vector2]:
         side: bool = self.index > 11
@@ -21,6 +21,3 @@ class Triangle:
         return (pygame.Vector2(borderOffset + constants.TRIANGLES_BASE_LENGTH * (self.index % 12), yBasePos),
                 pygame.Vector2(borderOffset + constants.TRIANGLES_BASE_LENGTH * (self.index % 12 + 1), yBasePos),
                 pygame.Vector2(borderOffset + constants.TRIANGLES_BASE_LENGTH * (self.index % 12 + 0.5), triangleHeight))
-
-    def render(self, surface: pygame.Surface):
-        self._geometry.render(surface)

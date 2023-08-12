@@ -4,14 +4,14 @@ from geometries.circle import Circle
 from color import Color
 
 
-class Checker:
+class Checker(Circle):
     def __init__(self, index: int, height: int, isWhite: bool):
         assert(index < 24)
         self._index = index
         self.height = height
 
-        self._geometry = Circle(self.calculateGeometryCenter(), constants.TRIANGLES_BASE_LENGTH / 2,
-                                Color.White if isWhite else Color.Black)
+        super().__init__(self.calculateGeometryCenter(), constants.TRIANGLES_BASE_LENGTH / 2,
+                         Color.White if isWhite else Color.Black)
 
     @property
     def index(self):
@@ -26,8 +26,6 @@ class Checker:
         borderOffset: float = constants.BORDER_WIDTH + (constants.BORDER_WIDTH * 2 * (5 < self.index < 12 or self.index > 17))
         side: bool = self.index > 11
         heightOffset: float = (self.height + 0.5) * constants.TRIANGLES_BASE_LENGTH
-        return pygame.Vector2(self.index % 12 * constants.TRIANGLES_BASE_LENGTH + constants.TRIANGLES_BASE_LENGTH / 2 + borderOffset,
-                              constants.WINDOW_HEIGHT * side + (constants.BORDER_WIDTH + heightOffset) * (1 - 2 * side))
-
-    def render(self, surface: pygame.Surface):
-        self._geometry.render(surface)
+        return pygame.Vector2(
+            self.index % 12 * constants.TRIANGLES_BASE_LENGTH + constants.TRIANGLES_BASE_LENGTH / 2 + borderOffset,
+            constants.WINDOW_HEIGHT * side + (constants.BORDER_WIDTH + heightOffset) * (1 - 2 * side))
