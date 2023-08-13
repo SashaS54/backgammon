@@ -6,9 +6,9 @@ from color import Color
 
 class Checker(Circle):
     def __init__(self, index: int, height: int, isWhite: bool):
-        assert(index < 24)
+        assert(index < 24 and height < 6)
         self._index = index
-        self.height = height
+        self._height = height
 
         self._selected: bool = False
         self._selectionShape: Circle = Circle(self.calculateGeometryCenter(), constants.TRIANGLES_BASE_LENGTH / 1.85,
@@ -29,6 +29,15 @@ class Checker(Circle):
     @property
     def selected(self):
         return self._selected
+
+    @property
+    def height(self):
+        return self._height
+
+    @height.setter
+    def height(self, value: int):
+        assert(value < 5)
+        self._height = value
 
     def calculateGeometryCenter(self) -> pygame.Vector2:
         borderOffset: float = constants.BORDER_WIDTH + (constants.BORDER_WIDTH * 2 * (5 < self.index < 12 or self.index > 17))

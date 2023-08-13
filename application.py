@@ -32,7 +32,10 @@ class Application:
                                 self.gameField.selectTopChecker(triangle.index)
                                 self.gameField.checkerToMove = topChecker
                             else:
-                                self.gameField.moveChecker(self.gameField.checkerToMove, triangle.index)
+                                try:
+                                    self.gameField.moveChecker(self.gameField.checkerToMove, triangle.index)
+                                except AssertionError:
+                                    self.gameField.deselectAllCheckers()
                                 self.gameField.checkerToMove = None
                             break
 
