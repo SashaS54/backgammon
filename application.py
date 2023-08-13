@@ -24,7 +24,7 @@ class Application:
                 if self._isLeftMouseDown(event):
                     self.gameField.deselectAllCheckers()
                     for triangle in self.gameField.triangles:
-                        if self._isGeometryClicked(triangle):
+                        if self._isCursorOnGeometry(triangle):
                             if self.gameField.checkerToMove is None:
                                 topChecker: Checker | None = self.gameField.getTopChecker(triangle.index)
                                 if topChecker is None:
@@ -50,5 +50,5 @@ class Application:
     def _isLeftMouseUp(self, event: pygame.event.EventType) -> bool:
         return event.type == pygame.MOUSEBUTTONUP and event.button == 1
 
-    def _isGeometryClicked(self, geometry: Geometry) -> bool:
+    def _isCursorOnGeometry(self, geometry: Geometry) -> bool:
         return geometry.intersects(pygame.Vector2(pygame.mouse.get_pos()))
