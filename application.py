@@ -25,7 +25,16 @@ class Application:
                     self.gameField.deselectAllCheckers()
                     for triangle in self.gameField.triangles:
                         if self._isGeometryClicked(triangle):
-                            self.gameField.selectTopChecker(triangle.index)
+                            if self.gameField.checkerToMove is None:
+                                topChecker: Checker | None = self.gameField.getTopChecker(triangle.index)
+                                if topChecker is None:
+                                    break
+                                self.gameField.selectTopChecker(triangle.index)
+                                self.gameField.checkerToMove = topChecker
+                            else:
+                                self.gameField.moveChecker(self.gameField.checkerToMove, triangle.index)
+                                self.gameField.checkerToMove = None
+                            break
 
             self.screenSurface.fill(Color.Background.toTuple())
             self.gameField.render(self.screenSurface)

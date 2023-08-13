@@ -9,6 +9,8 @@ class Triangle(Polygon):
     def __init__(self, index: int):
         self.index: int = index
 
+        self.checkersCount: int = 0
+
         super().__init__(self.calculateGeometryPoints(), Color(71, 71, 71) if index % 2 == 0 else Color(40, 40, 40))
 
     def calculateGeometryPoints(self) -> Tuple[pygame.Vector2, pygame.Vector2, pygame.Vector2]:

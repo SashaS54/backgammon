@@ -43,6 +43,12 @@ class Checker(Circle):
             self._selectionShape.render(surface)
         super().render(surface)
 
+    def move(self, index: int):
+        self.index = index
+        newCenterPos: pygame.Vector2 = self.calculateGeometryCenter()
+        self.center = newCenterPos
+        self._selectionShape.center = newCenterPos
+
     def select(self):
         self._selected = True
 

@@ -22,8 +22,10 @@ class GameField:
         self.thatCubeShit: Rectangle = Rectangle(pygame.Vector2(constants.WINDOW_WIDTH * 0.9, 0),
                                                  constants.WINDOW_WIDTH * 0.1, constants.WINDOW_HEIGHT, Color.Blue)
 
-        self.checkers = [Checker(12, 2, True), Checker(0, 1, True), Checker(0, 2, True), Checker(1, 0, False),
-                         Checker(1, 1, False), Checker(1, 2, False)]
+        self.checkers: List[Checker] = []
+        self.checkerToMove: Checker | None = None
+
+        self._initCheckers()
 
     def createField(self, isRight: bool) -> Rectangle:
         return Rectangle(pygame.Vector2(constants.FIELD_WIDTH * isRight, 0), constants.FIELD_WIDTH,
@@ -38,6 +40,31 @@ class GameField:
                           constants.BORDER_WIDTH, field.height, Color.BorderColor),
                 Rectangle(pygame.Vector2(field.point.x, field.point.y + field.height - constants.BORDER_WIDTH),
                           field.width, constants.BORDER_WIDTH, Color.BorderColor))
+
+    def _createChecker(self, index: int, isWhite: bool):
+        self.checkers.append(Checker(index, self.triangles[index].checkersCount, isWhite))
+        self.triangles[index].checkersCount += 1
+
+    def _initCheckers(self):
+        for i in range(5):
+            self._createChecker(0, True)
+            self._createChecker(6, False)
+            self._createChecker(12, False)
+            self._createChecker(18, True)
+
+        for i in range(3):
+            self._createChecker(4, False)
+            self._createChecker(16, True)
+
+        for i in range(2):
+            self._createChecker(11, True)
+            self._createChecker(23, False)
+
+    def moveChecker(self, checker: Checker, index: int):
+        self.triangles[checker.index].checkersCount -= 1
+        checker.height = self.triangles[index].checkersCount
+        checker.move(index)
+        self.triangles[index].checkersCount += 1
 
     def getTopChecker(self, index: int) -> Checker | None:
         result: Checker | None = None
