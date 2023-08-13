@@ -3,6 +3,7 @@ import constants
 from color import Color
 from gameField import GameField
 from checker import Checker
+from geometries.geometry import Geometry
 
 
 class Application:
@@ -20,20 +21,22 @@ class Application:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
-                if event.type == pygame.KEYDOWN:
-                    keyName: str = pygame.key.name(event.key)
-                    print(f"Yoo! {keyName.upper()} just got pressed.")
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # TODO Wrap this code in some functions
-                    for checker in self.gameField.checkers:
-                        checker.selected = False
+                if self._isLeftMouseDown(event):
+                    self.gameField.deselectAllCheckers()
                     for triangle in self.gameField.triangles:
-                        if triangle.intersects(pygame.Vector2(pygame.mouse.get_pos())):
-                            topChecker: Checker | None = self.gameField.getTopChecker(triangle.index)
-                            if topChecker is None:
-                                break
-                            topChecker.selected = True
+                        if self._isGeometryClicked(triangle):
+                            self.gameField.selectTopChecker(triangle.index)
 
             self.screenSurface.fill(Color.Background.toTuple())
             self.gameField.render(self.screenSurface)
 
             pygame.display.update()
+
+    def _isLeftMouseDown(self, event: pygame.event.EventType) -> bool:
+        return event.type == pygame.MOUSEBUTTONDOWN and event.button == 1
+
+    def _isLeftMouseUp(self, event: pygame.event.EventType) -> bool:
+        return event.type == pygame.MOUSEBUTTONUP and event.button == 1
+
+    def _isGeometryClicked(self, geometry: Geometry) -> bool:
+        return geometry.intersects(pygame.Vector2(pygame.mouse.get_pos()))

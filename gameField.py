@@ -54,6 +54,16 @@ class GameField:
 
         return result
 
+    def selectTopChecker(self, index: int):
+        topChecker: Checker | None = self.getTopChecker(index)
+        if topChecker is None:
+            return
+        topChecker.select()
+
+    def deselectAllCheckers(self):
+        for checker in self.checkers:
+            checker.deselect()
+
     def render(self, bgSurface: pygame.Surface):
         self.leftField.render(bgSurface)
         self.rightField.render(bgSurface)
