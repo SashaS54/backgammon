@@ -64,11 +64,14 @@ class GameField:
             self._createChecker(23, False)
 
     def moveChecker(self, checker: Checker, index: int):
-        assert(checker.index != index)
+        if checker.index == index:
+            raise RuntimeError
         if self.triangles[index].checkersCount > 1:
             for ch in self.checkers:
-                if ch.index == index:
-                    assert(ch.color == checker.color)
+                if ch.index == index and ch.color != checker.color:
+                    raise RuntimeError
+        if self.triangles[index].checkersCount == 5:
+            raise RuntimeError
         self.triangles[checker.index].checkersCount -= 1
         checker.height = self.triangles[index].checkersCount
         checker.move(index)

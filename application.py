@@ -44,7 +44,7 @@ class Application:
                                 try:
                                     oldIndex: int = self.gameField.checkerToMove.index
                                     self.gameField.moveChecker(self.gameField.checkerToMove, triangle.index)
-                                except AssertionError:
+                                except RuntimeError:
                                     self.gameField.deselectAllCheckers()
                                 else:
                                     logger.logMove(self._blackToMove, oldIndex, triangle.index)
