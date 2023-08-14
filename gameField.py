@@ -105,11 +105,11 @@ class GameField:
         for checker in self.checkers:
             checker.deselect()
 
-    def render(self, bgSurface: pygame.Surface, elapsedTime: int):
+    def render(self, bgSurface: pygame.Surface, deltaTime: int):
         self.leftField.render(bgSurface)
         self.rightField.render(bgSurface)
         self.thatCubeShit.render(bgSurface)
-        self.dice.render(bgSurface, elapsedTime)
+        self.dice.render(bgSurface, deltaTime)
 
         for side in self.leftFieldBorders:
             side.render(bgSurface)

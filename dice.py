@@ -10,9 +10,9 @@ class Dice:
         self._rolls: Tuple[int, int] = (0, 0)
         self._inProcess: bool = False
 
-        self._elapsedTime: int = 0
-        self._iterations: int = 0
-        self._timeDelay: int = 500
+        self._elapsedTime: int = 1
+        self._iterations: int = 1
+        self._timeDelay: int = 100
         self._reset: bool = True
 
         self._loadImages()
@@ -23,7 +23,8 @@ class Dice:
         self._images = tuple([pygame.image.load(f"assets/dice-{num}.png") for num in numbers])
 
     def _scaleImage(self):
-        self._images = tuple([pygame.transform.scale(img, (constants.DICE_LENGTH, constants.DICE_LENGTH)) for img in self._images])
+        self._images = tuple(
+            [pygame.transform.scale(img, (constants.DICE_LENGTH, constants.DICE_LENGTH)) for img in self._images])
 
     @property
     def rolls(self):
@@ -43,23 +44,23 @@ class Dice:
     def roll(self):
         self._inProcess = True
 
-    def render(self, bgSurface: pygame.Surface, elapsedTime: int):  # TODO Add some delay at the end
-        self._elapsedTime += elapsedTime
+    def render(self, bgSurface: pygame.Surface, deltaTime: int):  # TODO Add some delay at the end
+        self._elapsedTime += deltaTime / 60
         if self._inProcess:
-            bgSurface.blit(self._images[self._rolls[0]], constants.DICE_POSITION)
-            bgSurface.blit(self._images[self._rolls[1]], (constants.DICE_POSITION[0] + constants.DICE_LENGTH,
-                                                          constants.DICE_POSITION[1]))
+            bgSurface.blit(self._images[self._rolls[0] - 1], constants.DICE_POSITION)
+            bgSurface.blit(self._images[self._rolls[1] - 1], (constants.DICE_POSITION[0] + constants.DICE_LENGTH,
+                                                              constants.DICE_POSITION[1]))
             if self._iterations < 10:
                 if self._reset:
                     self._elapsedTime = 0
                     self._reset = False
                 if self._elapsedTime >= self._timeDelay:
                     self._roll()
-                    self._timeDelay += 2000
+                    self._timeDelay += 100
                     self._iterations += 1
                     self._elapsedTime = 0
             else:
                 self._reset = True
-                self._timeDelay = 0
+                self._timeDelay = 100
                 self._iterations = 0
                 self._inProcess = False

@@ -58,7 +58,7 @@ class Application:
                             break
 
             self.screenSurface.fill(Color.Background.toTuple())
-            self.gameField.render(self.screenSurface, self.clock.get_rawtime())
+            self.gameField.render(self.screenSurface, self.clock.get_time())
 
             pygame.display.update()
 
