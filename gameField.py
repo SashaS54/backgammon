@@ -5,6 +5,7 @@ from triangle import Triangle
 import constants
 from color import Color
 from checker import Checker
+from dice import Dice
 
 
 class GameField:
@@ -21,6 +22,8 @@ class GameField:
 
         self.thatCubeShit: Rectangle = Rectangle(pygame.Vector2(constants.WINDOW_WIDTH * 0.9, 0),
                                                  constants.WINDOW_WIDTH * 0.1, constants.WINDOW_HEIGHT, Color.Blue)
+
+        self.dice = Dice()
 
         self.checkers: List[Checker] = []
         self.checkerToMove: Checker | None = None
