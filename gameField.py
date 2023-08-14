@@ -103,6 +103,7 @@ class GameField:
         self.leftField.render(bgSurface)
         self.rightField.render(bgSurface)
         self.thatCubeShit.render(bgSurface)
+        self.dice.render(bgSurface)
 
         for side in self.leftFieldBorders:
             side.render(bgSurface)
