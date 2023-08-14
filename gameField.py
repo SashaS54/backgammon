@@ -1,6 +1,5 @@
 import pygame
 from typing import Tuple, List
-
 import logger
 from geometries.rectangle import Rectangle
 from triangle import Triangle
