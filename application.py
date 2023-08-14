@@ -16,6 +16,8 @@ class Application:
             (constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT))
         self.gameField: GameField = GameField()
 
+        self._blackToMove: bool = True
+
     def start(self):
         while self.running:
             for event in pygame.event.get():
@@ -29,6 +31,12 @@ class Application:
                                 topChecker: Checker | None = self.gameField.getTopChecker(triangle.index)
                                 if topChecker is None:
                                     break
+
+                                if self._blackToMove and topChecker.color != Color.Black:
+                                    break
+                                if not self._blackToMove and topChecker.color != Color.White:
+                                    break
+
                                 self.gameField.selectTopChecker(triangle.index)
                                 self.gameField.checkerToMove = topChecker
                             else:
@@ -36,6 +44,8 @@ class Application:
                                     self.gameField.moveChecker(self.gameField.checkerToMove, triangle.index)
                                 except AssertionError:
                                     self.gameField.deselectAllCheckers()
+                                else:
+                                    self._blackToMove = not self._blackToMove
                                 self.gameField.checkerToMove = None
                             break
 
