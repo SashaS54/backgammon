@@ -13,6 +13,7 @@ class Application:
         pygame.display.set_caption("Backgammon")
 
         self.running: bool = True
+        self.clock = pygame.time.Clock()
         self.screenSurface: pygame.SurfaceType = pygame.display.set_mode(
             (constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT))
         self.gameField: GameField = GameField()
@@ -20,11 +21,15 @@ class Application:
         self._blackToMove: bool = True
 
     def start(self):
+        self.clock.tick(60)
+
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
                 if self._isLeftMouseDown(event):
+                    if self.gameField.dice.inProcess:
+                        continue
                     self.gameField.deselectAllCheckers()
                     for triangle in self.gameField.triangles:
                         if self._isCursorOnGeometry(triangle):
@@ -53,7 +58,7 @@ class Application:
                             break
 
             self.screenSurface.fill(Color.Background.toTuple())
-            self.gameField.render(self.screenSurface)
+            self.gameField.render(self.screenSurface, self.clock.get_rawtime())
 
             pygame.display.update()
 
