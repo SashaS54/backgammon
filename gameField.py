@@ -1,6 +1,5 @@
 import pygame
 from typing import Tuple, List
-import logger
 from geometries.rectangle import Rectangle
 from triangle import Triangle
 import constants
@@ -77,8 +76,6 @@ class GameField:
         checker.height = self.triangles[index].checkersCount
         checker.move(index)
         self.triangles[index].checkersCount += 1
-        self.dice.roll()
-        logger.logDice(True if checker.color == Color.Black else False, self.dice.rolls)  # FIXME Not actual numbers
 
     def getTopChecker(self, index: int) -> Checker | None:
         result: Checker | None = None

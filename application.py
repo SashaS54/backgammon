@@ -1,6 +1,7 @@
 import pygame
 import constants
 import logger
+from typing import Tuple
 from color import Color
 from gameField import GameField
 from checker import Checker
@@ -59,9 +60,9 @@ class Application:
                                 self.gameField.checkerToMove = None
                             break
 
-            if self.gameField.dice.readRolls:
-                logger.logDice(self._blackToMove, self.gameField.dice.rolls)
-                self.gameField.dice.readRolls = False
+            if self.gameField.dice.canReadRolls:
+                rolls: Tuple[int, int] = self.gameField.dice.readRolls()
+                logger.logDice(self._blackToMove, rolls)
 
             self.screenSurface.fill(Color.Background.toTuple())
             self.gameField.render(self.screenSurface, self.clock.get_time())

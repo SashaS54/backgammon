@@ -9,7 +9,7 @@ class Dice:
         self._images: Sequence[pygame.Surface] = ()
         self._rolls: Tuple[int, int] = (0, 0)
         self._inProcess: bool = False
-        self.readRolls = False
+        self._canReadRolls = False
 
         self._elapsedTime: int = 1
         self._iterations: int = 1
@@ -28,12 +28,16 @@ class Dice:
             [pygame.transform.scale(img, (constants.DICE_LENGTH, constants.DICE_LENGTH)) for img in self._images])
 
     @property
-    def rolls(self):
-        return self._rolls
-
-    @property
     def inProcess(self):
         return self._inProcess
+
+    @property
+    def canReadRolls(self):
+        return self._canReadRolls
+
+    def readRolls(self) -> Tuple[int, int]:
+        self._canReadRolls = False
+        return self._rolls
 
     def _roll(self):
         while True:
@@ -67,7 +71,7 @@ class Dice:
                 self._timeDelay = 100
                 self._iterations = 0
                 self._inProcess = False
-                self.readRolls = True
+                self._canReadRolls = True
 
     def intersects(self, point: pygame.Vector2):
         return constants.DICE_POSITION[0] + constants.DICE_LENGTH * 2 >= point.x >= constants.DICE_POSITION[0] and\
