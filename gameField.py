@@ -61,6 +61,7 @@ class GameField:
             self._createChecker(23, False)
 
     def moveChecker(self, checker: Checker, index: int):
+        assert(checker.index != index)
         if self.triangles[index].checkersCount > 1:
             for ch in self.checkers:
                 if ch.index == index:
