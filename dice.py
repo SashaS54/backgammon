@@ -9,6 +9,7 @@ class Dice:
         self._images: Sequence[pygame.Surface] = ()
         self._rolls: Tuple[int, int] = (0, 0)
         self._inProcess: bool = False
+        self.readRolls = False
 
         self._elapsedTime: int = 1
         self._iterations: int = 1
@@ -44,12 +45,14 @@ class Dice:
     def roll(self):
         self._inProcess = True
 
-    def render(self, bgSurface: pygame.Surface, deltaTime: int):  # TODO Add some delay at the end
+    def render(self, bgSurface: pygame.Surface, deltaTime: int):
         self._elapsedTime += deltaTime / 60
+
+        bgSurface.blit(self._images[self._rolls[0] - 1], constants.DICE_POSITION)
+        bgSurface.blit(self._images[self._rolls[1] - 1], (constants.DICE_POSITION[0] + constants.DICE_LENGTH,
+                                                          constants.DICE_POSITION[1]))
+
         if self._inProcess:
-            bgSurface.blit(self._images[self._rolls[0] - 1], constants.DICE_POSITION)
-            bgSurface.blit(self._images[self._rolls[1] - 1], (constants.DICE_POSITION[0] + constants.DICE_LENGTH,
-                                                              constants.DICE_POSITION[1]))
             if self._iterations < 10:
                 if self._reset:
                     self._elapsedTime = 0
@@ -64,3 +67,8 @@ class Dice:
                 self._timeDelay = 100
                 self._iterations = 0
                 self._inProcess = False
+                self.readRolls = True
+
+    def intersects(self, point: pygame.Vector2):
+        return constants.DICE_POSITION[0] + constants.DICE_LENGTH * 2 >= point.x >= constants.DICE_POSITION[0] and\
+            constants.DICE_POSITION[1] + constants.DICE_LENGTH >= point.y >= constants.DICE_POSITION[1]

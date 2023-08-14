@@ -31,6 +31,8 @@ class Application:
                     if self.gameField.dice.inProcess:
                         continue
                     self.gameField.deselectAllCheckers()
+                    if self.gameField.dice.intersects(pygame.Vector2(pygame.mouse.get_pos())):
+                        self.gameField.dice.roll()
                     for triangle in self.gameField.triangles:
                         if self._isCursorOnGeometry(triangle):
                             if self.gameField.checkerToMove is None:
@@ -56,6 +58,10 @@ class Application:
                                     self._blackToMove = not self._blackToMove
                                 self.gameField.checkerToMove = None
                             break
+
+            if self.gameField.dice.readRolls:
+                logger.logDice(self._blackToMove, self.gameField.dice.rolls)
+                self.gameField.dice.readRolls = False
 
             self.screenSurface.fill(Color.Background.toTuple())
             self.gameField.render(self.screenSurface, self.clock.get_time())
