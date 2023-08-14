@@ -1,5 +1,6 @@
 import pygame
 import constants
+import logger
 from color import Color
 from gameField import GameField
 from checker import Checker
@@ -41,10 +42,12 @@ class Application:
                                 self.gameField.checkerToMove = topChecker
                             else:
                                 try:
+                                    oldIndex: int = self.gameField.checkerToMove.index
                                     self.gameField.moveChecker(self.gameField.checkerToMove, triangle.index)
                                 except AssertionError:
                                     self.gameField.deselectAllCheckers()
                                 else:
+                                    logger.logMove(self._blackToMove, oldIndex, triangle.index)
                                     self._blackToMove = not self._blackToMove
                                 self.gameField.checkerToMove = None
                             break
