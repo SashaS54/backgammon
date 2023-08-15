@@ -39,6 +39,9 @@ class Dice:
         self._canReadRolls = False
         return self._rolls
 
+    def loadRolls(self, rolls: Tuple[int, int]):
+        self._rolls = rolls
+
     def _roll(self):
         while True:
             rolls: Tuple[int, int] = (random.randrange(1, 6), random.randrange(1, 6))

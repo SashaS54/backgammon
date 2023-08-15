@@ -9,7 +9,7 @@ from dice import Dice
 
 
 class GameField:
-    def __init__(self):
+    def __init__(self, loadSave: bool = False):
         self.leftField: Rectangle = self.createField(False)
         self.rightField: Rectangle = self.createField(True)
 
@@ -28,7 +28,8 @@ class GameField:
         self.checkers: List[Checker] = []
         self.checkerToMove: Checker | None = None
 
-        self._initCheckers()
+        if not loadSave:
+            self._initCheckers()
 
     def createField(self, isRight: bool) -> Rectangle:
         return Rectangle(pygame.Vector2(constants.FIELD_WIDTH * isRight, 0), constants.FIELD_WIDTH,
@@ -44,24 +45,24 @@ class GameField:
                 Rectangle(pygame.Vector2(field.point.x, field.point.y + field.height - constants.BORDER_WIDTH),
                           field.width, constants.BORDER_WIDTH, Color.BorderColor))
 
-    def _createChecker(self, index: int, isWhite: bool):
+    def createChecker(self, index: int, isWhite: bool):
         self.checkers.append(Checker(index, self.triangles[index].checkersCount, isWhite))
         self.triangles[index].checkersCount += 1
 
     def _initCheckers(self):
         for i in range(5):
-            self._createChecker(0, True)
-            self._createChecker(6, False)
-            self._createChecker(12, False)
-            self._createChecker(18, True)
+            self.createChecker(0, True)
+            self.createChecker(6, False)
+            self.createChecker(12, False)
+            self.createChecker(18, True)
 
         for i in range(3):
-            self._createChecker(4, False)
-            self._createChecker(16, True)
+            self.createChecker(4, False)
+            self.createChecker(16, True)
 
         for i in range(2):
-            self._createChecker(11, True)
-            self._createChecker(23, False)
+            self.createChecker(11, True)
+            self.createChecker(23, False)
 
     def moveChecker(self, checker: Checker, index: int):
         if checker.index == index:
