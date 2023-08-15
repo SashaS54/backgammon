@@ -1,7 +1,9 @@
 import pygame
 import constants
 import logger
-from typing import Tuple
+from datetime import datetime
+from sys import exit
+from typing import Tuple, List
 from color import Color
 from gameField import GameField
 from checker import Checker
@@ -27,6 +29,7 @@ class Application:
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    self.saveGame()
                     self.running = False
                 if self._isLeftMouseDown(event):
                     if self.gameField.dice.inProcess:
@@ -77,3 +80,67 @@ class Application:
 
     def _isCursorOnGeometry(self, geometry: Geometry) -> bool:
         return geometry.intersects(pygame.Vector2(pygame.mouse.get_pos()))
+
+    def saveGame(self):
+        fileName: str = datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
+        with open(f"saves/{fileName}.bin", "xb") as file:
+            file.write(b'\x01' if self._blackToMove else b'\x00')
+
+            rolls: Tuple[int, int] = self.gameField.dice.readRolls()
+            for roll in rolls:
+                file.write(roll.to_bytes(1, byteorder="big", signed=False))
+
+            for triangle in self.gameField.triangles:
+                topChecker: Checker | None = self.gameField.getTopChecker(triangle.index)
+                color: bytes = b'\x01' if topChecker is not None and topChecker.color == Color.White else b'\x00'
+                file.write(color)
+
+                count: bytes = triangle.checkersCount.to_bytes(1, byteorder="big", signed=False)
+                file.write(count)
+
+    def loadGame(self, fileName: str):
+        try:
+            with open(f"saves/{fileName}", "rb") as file:
+                moveByte: bytes = file.read(1)
+                if moveByte == b'\x01':
+                    self._blackToMove = True
+                elif moveByte == b'\x00':
+                    self._blackToMove = False
+                else:
+                    print("Save file is corrupted.")
+                    exit(1)
+
+                rolls: List[int, int] = [0, 0]
+                for i in range(2):
+                    rollByte: bytes = file.read(1)
+                    rollInt: int = int.from_bytes(rollByte, byteorder="big", signed=False)
+
+                    if rollInt == 0 or rollInt > 6:
+                        print("Save file is corrupted.")
+                        exit(1)
+
+                    rolls[i] = rollInt
+                self.gameField.dice.loadRolls(tuple(rolls))
+
+                for triangle in self.gameField.triangles:
+                    colorByte: bytes = file.read(1)
+                    if colorByte == b'\x01':
+                        isWhite: bool = True
+                    elif colorByte == b'\x00':
+                        isWhite: bool = False
+                    else:
+                        print("Save file is corrupted.")
+                        exit(1)
+
+                    countByte: bytes = file.read(1)
+                    count: int = int.from_bytes(countByte, byteorder="big", signed=False)
+                    if count > 5:
+                        print("Save file is corrupted.")
+                        exit(1)
+
+                    for i in range(count):
+                        self.gameField.createChecker(triangle.index, isWhite)
+
+        except FileNotFoundError:
+            print("Couldn't find save file.")
+            exit(1)
