@@ -22,7 +22,9 @@ class Application:
         self.gameField: GameField = GameField()
 
         self._blackToMove: bool = True
-        self._validMoves: List[int] = []
+        self._rolls: Tuple[int, int] = (0, 0)
+        self._moved: List[bool] = [False, False]
+        self._moves: int = 2
 
     def start(self):
         self.clock.tick(60)
@@ -61,12 +63,16 @@ class Application:
                                 self.gameField.checkerToMove = topChecker
 
                                 validMoves: List[int] = self._getValidMoves(triangle.index)
-                                for move in validMoves:
-                                    self.gameField.triangles[move].select()
+                                for i, move in enumerate(validMoves):
+                                    if not self._moved[i]:
+                                        self.gameField.triangles[move].select()
                             else:
-                                if triangle.index not in self._getValidMoves(self.gameField.checkerToMove.index):
+                                validMoves: List[int] = self._getValidMoves(self.gameField.checkerToMove.index)
+
+                                if triangle.index not in validMoves:
                                     self.gameField.checkerToMove = None
                                     break
+
                                 try:
                                     oldIndex: int = self.gameField.checkerToMove.index
                                     self.gameField.moveChecker(self.gameField.checkerToMove, triangle.index)
@@ -74,16 +80,28 @@ class Application:
                                     self.gameField.deselectAllCheckers()
                                 else:
                                     logger.logMove(self._blackToMove, oldIndex, triangle.index)
-                                    self._blackToMove = not self._blackToMove
-                                    self.gameField.dice.dropped = False
+                                    self._moved[validMoves.index(triangle.index)] = True
+                                    self._moves -= 1
+                                    print(self._moves)
+                                    print(self._moved)
+
+                                    if False not in self._moved and self._moves == 0:
+                                        self._blackToMove = not self._blackToMove
+                                        self.gameField.dice.dropped = False
+                                        self._moved = [False, False]
+                                        self._moves = 2
+
                                 self.gameField.checkerToMove = None
                             break
                     else:
                         self.gameField.checkerToMove = None
 
             if self.gameField.dice.canReadRolls:
-                rolls: Tuple[int, int] = self.gameField.dice.readRolls()
-                logger.logDice(self._blackToMove, rolls)
+                self._rolls = self.gameField.dice.readRolls()
+                logger.logDice(self._blackToMove, self._rolls)
+
+                if self._rolls[0] == self._rolls[1]:
+                    self._moves = 4
 
             self.screenSurface.fill(Color.Background.toTuple())
             self.gameField.render(self.screenSurface, self.clock.get_time())
@@ -100,7 +118,15 @@ class Application:
         return geometry.intersects(pygame.Vector2(pygame.mouse.get_pos()))
 
     def _getValidMoves(self, position: int) -> List[int]:
-        return [1]
+        result: List[int] = []
+
+        for roll in self._rolls:
+            result.append((position + roll * (1 - 2 * (not self._blackToMove))) % 23)
+            if self._rolls[0] == self._rolls[1]:
+                self._moved = [False]
+                break
+
+        return result
 
     def saveGame(self):
         fileName: str = datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
