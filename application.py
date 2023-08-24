@@ -82,8 +82,6 @@ class Application:
                                     logger.logMove(self._blackToMove, oldIndex, triangle.index)
                                     self._moved[validMoves.index(triangle.index)] = True
                                     self._moves -= 1
-                                    print(self._moves)
-                                    print(self._moved)
 
                                     if False not in self._moved and self._moves == 0:
                                         self._blackToMove = not self._blackToMove
@@ -121,7 +119,7 @@ class Application:
         result: List[int] = []
 
         for roll in self._rolls:
-            result.append((position + roll * (1 - 2 * (not self._blackToMove))) % 23)
+            result.append((position + roll * (1 - 2 * (not self._blackToMove))) % 23)  # TODO +1 % 23
             if self._rolls[0] == self._rolls[1]:
                 self._moved = [False]
                 break
