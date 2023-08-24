@@ -103,6 +103,10 @@ class GameField:
         for checker in self.checkers:
             checker.deselect()
 
+    def deselectAllTriangles(self):
+        for triangle in self.triangles:
+            triangle.deselect()
+
     def render(self, bgSurface: pygame.Surface, deltaTime: int):
         self.leftField.render(bgSurface)
         self.rightField.render(bgSurface)

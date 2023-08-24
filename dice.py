@@ -16,6 +16,8 @@ class Dice:
         self._timeDelay: int = 100
         self._reset: bool = True
 
+        self.dropped: bool = False
+
         self._loadImages()
         self._scaleImage()
 
@@ -75,6 +77,7 @@ class Dice:
                 self._iterations = 0
                 self._inProcess = False
                 self._canReadRolls = True
+                self.dropped = True
 
     def intersects(self, point: pygame.Vector2):
         return constants.DICE_POSITION[0] + constants.DICE_LENGTH * 2 >= point.x >= constants.DICE_POSITION[0] and\

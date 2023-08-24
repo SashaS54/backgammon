@@ -22,6 +22,7 @@ class Application:
         self.gameField: GameField = GameField()
 
         self._blackToMove: bool = True
+        self._validMoves: List[int] = []
 
     def start(self):
         self.clock.tick(60)
@@ -34,9 +35,16 @@ class Application:
                 if self._isLeftMouseDown(event):
                     if self.gameField.dice.inProcess:
                         continue
-                    self.gameField.deselectAllCheckers()
-                    if self.gameField.dice.intersects(pygame.Vector2(pygame.mouse.get_pos())):
+
+                    if self.gameField.dice.intersects(pygame.Vector2(pygame.mouse.get_pos())) and not self.gameField.dice.dropped:
                         self.gameField.dice.roll()
+
+                    if not self.gameField.dice.dropped:
+                        continue
+
+                    self.gameField.deselectAllCheckers()
+                    self.gameField.deselectAllTriangles()
+
                     for triangle in self.gameField.triangles:
                         if self._isCursorOnGeometry(triangle):
                             if self.gameField.checkerToMove is None:
@@ -51,7 +59,14 @@ class Application:
 
                                 self.gameField.selectTopChecker(triangle.index)
                                 self.gameField.checkerToMove = topChecker
+
+                                validMoves: List[int] = self._getValidMoves(triangle.index)
+                                for move in validMoves:
+                                    self.gameField.triangles[move].select()
                             else:
+                                if triangle.index not in self._getValidMoves(self.gameField.checkerToMove.index):
+                                    self.gameField.checkerToMove = None
+                                    break
                                 try:
                                     oldIndex: int = self.gameField.checkerToMove.index
                                     self.gameField.moveChecker(self.gameField.checkerToMove, triangle.index)
@@ -60,8 +75,11 @@ class Application:
                                 else:
                                     logger.logMove(self._blackToMove, oldIndex, triangle.index)
                                     self._blackToMove = not self._blackToMove
+                                    self.gameField.dice.dropped = False
                                 self.gameField.checkerToMove = None
                             break
+                    else:
+                        self.gameField.checkerToMove = None
 
             if self.gameField.dice.canReadRolls:
                 rolls: Tuple[int, int] = self.gameField.dice.readRolls()
@@ -80,6 +98,9 @@ class Application:
 
     def _isCursorOnGeometry(self, geometry: Geometry) -> bool:
         return geometry.intersects(pygame.Vector2(pygame.mouse.get_pos()))
+
+    def _getValidMoves(self, position: int) -> List[int]:
+        return [1]
 
     def saveGame(self):
         fileName: str = datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
