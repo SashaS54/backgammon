@@ -87,8 +87,8 @@ class Application:
                                     for checker in self.gameField.checkers:
                                         if checker.index == triangle.index and \
                                                 checker.color != self.gameField.checkerToMove.color:
-                                            print(1)
                                             self.gameField.occupyBars[self._blackToMove].checkers += 1
+                                            logger.logOccupy(self._blackToMove, triangle.index)
                                             break
 
                                     if False not in self._moved and self._moves == 0:
