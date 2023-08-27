@@ -63,8 +63,7 @@ class Checker(Circle):
         self.recalculateShapePosition()
 
     def lock(self):
-        self.index = -1
-        self.height = -1
+        self.index = -1 if self.color == Color.Black else -2
 
     def select(self):
         self._selected = True

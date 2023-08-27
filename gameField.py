@@ -81,6 +81,7 @@ class GameField:
     def lockChecker(self, checker: Checker):
         self.triangles[checker.index].checkersCount -= 1
         checker.lock()
+        checker.height = self.occupyBars[checker.color == Color.Black].checkers
 
     def getTopChecker(self, index: int) -> Checker | None:
         result: Checker | None = None

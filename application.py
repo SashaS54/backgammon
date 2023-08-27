@@ -48,6 +48,11 @@ class Application:
                     self.gameField.deselectAllCheckers()
                     self.gameField.deselectAllTriangles()
 
+                    if self.gameField.occupyBars[not self._blackToMove].checkers > 0 and self.gameField.checkerToMove is None:
+                        self.gameField.checkerToMove = self.gameField.getTopChecker(-2 + self._blackToMove)
+                        self._selectValidMoves(11 + 12 * self._blackToMove)
+                        continue
+
                     for triangle in self.gameField.triangles:
                         if self._isCursorOnGeometry(triangle):
                             if self.gameField.checkerToMove is None:
@@ -63,12 +68,11 @@ class Application:
                                 self.gameField.selectTopChecker(triangle.index)
                                 self.gameField.checkerToMove = topChecker
 
-                                validMoves: List[int] = self._getValidMoves(triangle.index)
-                                for i, move in enumerate(validMoves):
-                                    if not self._moved[i] and self.gameField.isValidMove(self._blackToMove, move):
-                                        self.gameField.triangles[move].select()
+                                self._selectValidMoves(triangle.index)
                             else:
-                                validMoves: List[int] = self._getValidMoves(self.gameField.checkerToMove.index)
+                                validMoves: List[int] = self._getValidMoves(11 + 12 * self._blackToMove
+                                                                            if self.gameField.checkerToMove.index < 0
+                                                                            else self.gameField.checkerToMove.index)
 
                                 if triangle.index not in validMoves:
                                     self.gameField.checkerToMove = None
@@ -83,6 +87,9 @@ class Application:
                                     logger.logMove(self._blackToMove, oldIndex, triangle.index)
                                     self._moved[validMoves.index(triangle.index)] = True
                                     self._moves -= 1
+
+                                    if oldIndex < 0:
+                                        self.gameField.occupyBars[not self._blackToMove].checkers -= 1
 
                                     for checker in self.gameField.checkers:
                                         if checker.index == triangle.index and \
@@ -138,6 +145,12 @@ class Application:
                 break
 
         return result
+
+    def _selectValidMoves(self, index: int):
+        validMoves: List[int] = self._getValidMoves(index)
+        for i, move in enumerate(validMoves):
+            if not self._moved[i] and self.gameField.isValidMove(self._blackToMove, move):
+                self.gameField.triangles[move].select()
 
     def saveGame(self):
         fileName: str = datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
