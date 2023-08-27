@@ -81,6 +81,10 @@ class GameField:
         checker.move(index)
         self.triangles[index].checkersCount += 1
 
+    def lockChecker(self, checker: Checker):
+        self.triangles[checker.index].checkersCount -= 1
+        checker.lock()
+
     def getTopChecker(self, index: int) -> Checker | None:
         result: Checker | None = None
 

@@ -7,8 +7,8 @@ from color import Color
 class Checker(Circle):
     def __init__(self, index: int, height: int, isWhite: bool):
         assert(index < 24 and height < 6)
-        self._index = index
-        self._height = height
+        self._index: int = index
+        self._height: int = height
 
         self._selected: bool = False
         self._selectionShape: Circle = Circle(self.calculateGeometryCenter(), constants.TRIANGLES_BASE_LENGTH / 1.85,
@@ -47,16 +47,24 @@ class Checker(Circle):
             self.index % 12 * constants.TRIANGLES_BASE_LENGTH + constants.TRIANGLES_BASE_LENGTH / 2 + borderOffset,
             constants.WINDOW_HEIGHT * side + (constants.BORDER_WIDTH + heightOffset) * (1 - 2 * side))
 
-    def render(self, surface: pygame.Surface):
-        if self.selected:
-            self._selectionShape.render(surface)
-        super().render(surface)
-
-    def move(self, index: int):
-        self.index = index
+    def recalculateShapePosition(self):
         newCenterPos: pygame.Vector2 = self.calculateGeometryCenter()
         self.center = newCenterPos
         self._selectionShape.center = newCenterPos
+
+    def render(self, surface: pygame.Surface):
+        if self.selected:
+            self._selectionShape.render(surface)
+        if self.index >= 0:
+            super().render(surface)
+
+    def move(self, index: int):
+        self.index = index
+        self.recalculateShapePosition()
+
+    def lock(self):
+        self.index = -1
+        self.height = -1
 
     def select(self):
         self._selected = True

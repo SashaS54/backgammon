@@ -88,6 +88,11 @@ class Application:
                                         if checker.index == triangle.index and \
                                                 checker.color != self.gameField.checkerToMove.color:
                                             self.gameField.occupyBars[self._blackToMove].checkers += 1
+                                            self.gameField.lockChecker(checker)
+
+                                            self.gameField.checkerToMove.height = 0
+                                            self.gameField.checkerToMove.recalculateShapePosition()
+
                                             logger.logOccupy(self._blackToMove, triangle.index)
                                             break
 
