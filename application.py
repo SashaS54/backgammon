@@ -38,7 +38,8 @@ class Application:
                     if self.gameField.dice.inProcess:
                         continue
 
-                    if self.gameField.dice.intersects(pygame.Vector2(pygame.mouse.get_pos())) and not self.gameField.dice.dropped:
+                    if self.gameField.dice.intersects(
+                            pygame.Vector2(pygame.mouse.get_pos())) and not self.gameField.dice.dropped:
                         self.gameField.dice.roll()
 
                     if not self.gameField.dice.dropped:
@@ -82,6 +83,13 @@ class Application:
                                     logger.logMove(self._blackToMove, oldIndex, triangle.index)
                                     self._moved[validMoves.index(triangle.index)] = True
                                     self._moves -= 1
+
+                                    for checker in self.gameField.checkers:
+                                        if checker.index == triangle.index and \
+                                                checker.color != self.gameField.checkerToMove.color:
+                                            print(1)
+                                            self.gameField.occupyBars[self._blackToMove].checkers += 1
+                                            break
 
                                     if False not in self._moved and self._moves == 0:
                                         self._blackToMove = not self._blackToMove

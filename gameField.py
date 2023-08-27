@@ -1,6 +1,7 @@
 import pygame
 from typing import Tuple, List
 from geometries.rectangle import Rectangle
+from occupyBar import OccupyBar
 from triangle import Triangle
 import constants
 from color import Color
@@ -27,6 +28,8 @@ class GameField:
 
         self.checkers: List[Checker] = []
         self.checkerToMove: Checker | None = None
+
+        self.occupyBars: Tuple[OccupyBar, OccupyBar] = (OccupyBar(True), OccupyBar(False))
 
         if not loadSave:
             self._initCheckers()
@@ -124,3 +127,6 @@ class GameField:
 
         for checker in self.checkers:
             checker.render(bgSurface)
+
+        for bar in self.occupyBars:
+            bar.render(bgSurface)
