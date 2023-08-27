@@ -143,6 +143,9 @@ class Application:
             for roll in rolls:
                 file.write(roll.to_bytes(1, byteorder="big", signed=False))
 
+            for bar in self.gameField.occupyBars:
+                file.write(bar.checkers.to_bytes(1, byteorder="big", signed=False))
+
             for triangle in self.gameField.triangles:
                 topChecker: Checker | None = self.gameField.getTopChecker(triangle.index)
                 color: bytes = b'\x01' if topChecker is not None and topChecker.color == Color.White else b'\x00'
@@ -174,6 +177,16 @@ class Application:
 
                     rolls[i] = rollInt
                 self.gameField.dice.loadRolls(tuple(rolls))
+
+                for i in range(2):
+                    occupyCheckersByte: bytes = file.read(1)
+                    occupyCheckersInt: int = int.from_bytes(occupyCheckersByte, byteorder="big", signed=False)
+
+                    if occupyCheckersInt < 0:
+                        print("Save file is corrupted.")
+                        exit(1)
+
+                    self.gameField.occupyBars[i].checkers = occupyCheckersInt
 
                 for triangle in self.gameField.triangles:
                     colorByte: bytes = file.read(1)
