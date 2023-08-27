@@ -2,7 +2,7 @@ from typing import Tuple
 
 
 def logMove(player: bool, indexFrom: int, indexTo: int):
-    print(f"Player {'Black' if player else 'White'} moved their checker from triangle {indexFrom} to triangle {indexTo}.")
+    print(f"Player {'Black' if player else 'White'} moved their checker from triangle {'occupation' if indexFrom < 0 else indexFrom} to triangle {indexTo}.")
 
 
 def logDice(player: bool, result: Tuple[int, int]):
