@@ -157,56 +157,54 @@ class Application:
     def loadGame(self, fileName: str):
         try:
             with open(f"saves/{fileName}", "rb") as file:
-                moveByte: bytes = file.read(1)
-                if moveByte == b'\x01':
-                    self._blackToMove = True
-                elif moveByte == b'\x00':
-                    self._blackToMove = False
-                else:
+                try:
+                    moveByte: bytes = file.read(1)
+                    if moveByte == b'\x01':
+                        self._blackToMove = True
+                    elif moveByte == b'\x00':
+                        self._blackToMove = False
+                    else:
+                        raise RuntimeError
+
+                    rolls: List[int, int] = [0, 0]
+                    for i in range(2):
+                        rollByte: bytes = file.read(1)
+                        rollInt: int = int.from_bytes(rollByte, byteorder="big", signed=False)
+
+                        if rollInt == 0 or rollInt > 6:
+                            raise RuntimeError
+
+                        rolls[i] = rollInt
+                    self.gameField.dice.loadRolls(tuple(rolls))
+
+                    for i in range(2):
+                        occupyCheckersByte: bytes = file.read(1)
+                        occupyCheckersInt: int = int.from_bytes(occupyCheckersByte, byteorder="big", signed=False)
+
+                        if occupyCheckersInt < 0:
+                            raise RuntimeError
+
+                        self.gameField.occupyBars[i].checkers = occupyCheckersInt
+
+                    for triangle in self.gameField.triangles:
+                        colorByte: bytes = file.read(1)
+                        if colorByte == b'\x01':
+                            isWhite: bool = True
+                        elif colorByte == b'\x00':
+                            isWhite: bool = False
+                        else:
+                            raise RuntimeError
+
+                        countByte: bytes = file.read(1)
+                        count: int = int.from_bytes(countByte, byteorder="big", signed=False)
+                        if count > 5:
+                            raise RuntimeError
+
+                        for i in range(count):
+                            self.gameField.createChecker(triangle.index, isWhite)
+                except RuntimeError:
                     print("Save file is corrupted.")
                     exit(1)
-
-                rolls: List[int, int] = [0, 0]
-                for i in range(2):
-                    rollByte: bytes = file.read(1)
-                    rollInt: int = int.from_bytes(rollByte, byteorder="big", signed=False)
-
-                    if rollInt == 0 or rollInt > 6:
-                        print("Save file is corrupted.")
-                        exit(1)
-
-                    rolls[i] = rollInt
-                self.gameField.dice.loadRolls(tuple(rolls))
-
-                for i in range(2):
-                    occupyCheckersByte: bytes = file.read(1)
-                    occupyCheckersInt: int = int.from_bytes(occupyCheckersByte, byteorder="big", signed=False)
-
-                    if occupyCheckersInt < 0:
-                        print("Save file is corrupted.")
-                        exit(1)
-
-                    self.gameField.occupyBars[i].checkers = occupyCheckersInt
-
-                for triangle in self.gameField.triangles:
-                    colorByte: bytes = file.read(1)
-                    if colorByte == b'\x01':
-                        isWhite: bool = True
-                    elif colorByte == b'\x00':
-                        isWhite: bool = False
-                    else:
-                        print("Save file is corrupted.")
-                        exit(1)
-
-                    countByte: bytes = file.read(1)
-                    count: int = int.from_bytes(countByte, byteorder="big", signed=False)
-                    if count > 5:
-                        print("Save file is corrupted.")
-                        exit(1)
-
-                    for i in range(count):
-                        self.gameField.createChecker(triangle.index, isWhite)
-
         except FileNotFoundError:
             print("Couldn't find save file.")
             exit(1)
