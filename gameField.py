@@ -70,12 +70,9 @@ class GameField:
     def moveChecker(self, checker: Checker, index: int):
         if checker.index == index:
             raise RuntimeError
-        if self.triangles[index].checkersCount > 1:
-            for ch in self.checkers:
-                if ch.index == index and ch.color != checker.color:
-                    raise RuntimeError
-        if self.triangles[index].checkersCount == 5:
+        if not self.isValidMove(checker.color == Color.Black, index):
             raise RuntimeError
+
         self.triangles[checker.index].checkersCount -= 1
         checker.height = self.triangles[index].checkersCount
         checker.move(index)
@@ -99,6 +96,19 @@ class GameField:
             height = checker.height
 
         return result
+
+    def isValidMove(self, isBlack: bool, index: int) -> bool:
+        if self.triangles[index].checkersCount == 5:
+            return False
+
+        if self.triangles[index].checkersCount == 1:
+            return True
+
+        topChecker: Checker | None = self.getTopChecker(index)
+        if topChecker is None:
+            return True
+
+        return topChecker.color == (Color.Black if isBlack else Color.White)
 
     def selectTopChecker(self, index: int):
         topChecker: Checker | None = self.getTopChecker(index)

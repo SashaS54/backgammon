@@ -65,7 +65,7 @@ class Application:
 
                                 validMoves: List[int] = self._getValidMoves(triangle.index)
                                 for i, move in enumerate(validMoves):
-                                    if not self._moved[i]:
+                                    if not self._moved[i] and self.gameField.isValidMove(self._blackToMove, move):
                                         self.gameField.triangles[move].select()
                             else:
                                 validMoves: List[int] = self._getValidMoves(self.gameField.checkerToMove.index)
