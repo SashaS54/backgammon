@@ -15,7 +15,7 @@ class Color:
 
 
 Color.Background = Color(0, 0, 0)
-Color.BorderColor = Color(0, 0, 0)
+Color.BorderColor = Color(41, 34, 34)
 
 Color.Red = Color(255, 0, 0)
 Color.Green = Color(0, 255, 0)
