@@ -207,9 +207,9 @@ class Application:
                     self._rolls = tuple(rolls)
 
                     diceDropped: bytes = file.read(1)
-                    if moveByte == b'\x01':
+                    if diceDropped == b'\x01':
                         self.gameField.dice.dropped = True
-                    elif moveByte == b'\x00':
+                    elif diceDropped == b'\x00':
                         self.gameField.dice.dropped = False
                     else:
                         raise RuntimeError
