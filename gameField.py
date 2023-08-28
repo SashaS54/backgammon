@@ -24,6 +24,20 @@ class GameField:
         self.thatCubeShit: Rectangle = Rectangle(pygame.Vector2(constants.WINDOW_WIDTH * 0.9, 0),
                                                  constants.WINDOW_WIDTH * 0.1, constants.WINDOW_HEIGHT, Color.Blue)
 
+        self._skipButtonBorder: Rectangle = Rectangle(pygame.Vector2(self.thatCubeShit.point.x,
+                                                                     self.thatCubeShit.height / 2
+                                                                     - self.thatCubeShit.width / 2),
+                                                      self.thatCubeShit.width, self.thatCubeShit.width,
+                                                      Color.White)
+        self.skipButton: Rectangle = Rectangle(pygame.Vector2(self._skipButtonBorder.point.x
+                                                              + self.thatCubeShit.width / 18,
+                                                              self._skipButtonBorder.point.y
+                                                              + self._skipButtonBorder.width / 18),
+                                               self._skipButtonBorder.width - self._skipButtonBorder.width / 10,
+                                               self._skipButtonBorder.width - self._skipButtonBorder.width / 10,
+                                               Color.Black)
+        self._skipButtonText: pygame.font.FontType = pygame.font.Font("freesansbold.ttf", 32)
+
         self.dice = Dice()
 
         self.checkers: List[Checker] = []
@@ -130,6 +144,14 @@ class GameField:
         self.rightField.render(bgSurface)
         self.thatCubeShit.render(bgSurface)
         self.dice.render(bgSurface, deltaTime)
+
+        self._skipButtonBorder.render(bgSurface)
+        self.skipButton.render(bgSurface)
+        skitButtonTextSurface: pygame.Surface = self._skipButtonText.render("Skip", True, (255, 255, 255))
+        skipButtonTextRect: pygame.Rect = skitButtonTextSurface.get_rect()
+        skipButtonTextRect.center = (self.skipButton.point.x + self.skipButton.width / 2,
+                                     self.skipButton.point.y + self.skipButton.height / 2)
+        bgSurface.blit(skitButtonTextSurface, skipButtonTextRect)
 
         for side in self.leftFieldBorders:
             side.render(bgSurface)

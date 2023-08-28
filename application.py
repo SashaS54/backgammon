@@ -56,6 +56,10 @@ class Application:
                         self._selectValidMoves(11 + 12 * self._blackToMove)
                         continue
 
+                    if self._isCursorOnGeometry(self.gameField.skipButton):
+                        logger.logSkipMove(self._blackToMove)
+                        self._resetMove()
+
                     for triangle in self.gameField.triangles:
                         if self._isCursorOnGeometry(triangle):
                             if self.gameField.checkerToMove is None:
@@ -107,10 +111,7 @@ class Application:
                                             break
 
                                     if False not in self._moved and self._moves == 0:
-                                        self._blackToMove = not self._blackToMove
-                                        self.gameField.dice.dropped = False
-                                        self._moved = [False, False]
-                                        self._moves = 2
+                                        self._resetMove()
 
                                 self.gameField.checkerToMove = None
                             break
@@ -154,6 +155,12 @@ class Application:
         for i, move in enumerate(validMoves):
             if not self._moved[i] and self.gameField.isValidMove(self._blackToMove, move):
                 self.gameField.triangles[move].select()
+
+    def _resetMove(self):
+        self._blackToMove = not self._blackToMove
+        self.gameField.dice.dropped = False
+        self._moved = [False, False]
+        self._moves = 2
 
     def saveGame(self):
         fileName: str = datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
