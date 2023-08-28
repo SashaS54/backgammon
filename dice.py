@@ -7,7 +7,7 @@ import constants
 class Dice:
     def __init__(self):
         self._images: Sequence[pygame.Surface] = ()
-        self._rolls: Tuple[int, int] = (0, 0)
+        self._rolls: Tuple[int, int] = (6, 6)
         self._inProcess: bool = False
         self._canReadRolls = False
 

@@ -11,7 +11,7 @@ from geometries.geometry import Geometry
 
 
 class Application:
-    def __init__(self):
+    def __init__(self, save: str | None = None):
         pygame.init()
         pygame.display.set_caption("Backgammon")
 
@@ -19,12 +19,15 @@ class Application:
         self.clock = pygame.time.Clock()
         self.screenSurface: pygame.SurfaceType = pygame.display.set_mode(
             (constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT))
-        self.gameField: GameField = GameField()
+        self.gameField: GameField = GameField(save is not None)
 
         self._blackToMove: bool = True
         self._rolls: Tuple[int, int] = (0, 0)
         self._moved: List[bool] = [False, False]
         self._moves: int = 2
+
+        if save is not None:
+            self.loadGame(save)
 
     def start(self):
         self.clock.tick(60)
@@ -161,6 +164,13 @@ class Application:
             for roll in rolls:
                 file.write(roll.to_bytes(1, byteorder="big", signed=False))
 
+            file.write(b'\x01' if self.gameField.dice.dropped else b'\x00')
+
+            for moved in self._moved:
+                file.write(b'\x01' if moved else b'\x00')
+
+            file.write(self._moves.to_bytes(1, byteorder="big", signed=False))
+
             for bar in self.gameField.occupyBars:
                 file.write(bar.checkers.to_bytes(1, byteorder="big", signed=False))
 
@@ -194,6 +204,32 @@ class Application:
 
                         rolls[i] = rollInt
                     self.gameField.dice.loadRolls(tuple(rolls))
+                    self._rolls = tuple(rolls)
+
+                    diceDropped: bytes = file.read(1)
+                    if moveByte == b'\x01':
+                        self.gameField.dice.dropped = True
+                    elif moveByte == b'\x00':
+                        self.gameField.dice.dropped = False
+                    else:
+                        raise RuntimeError
+
+                    for i in range(2):
+                        movedByte: bytes = file.read(1)
+                        if movedByte == b'\x01':
+                            self._moved[i] = True
+                        elif movedByte == b'\x00':
+                            self._moved[i] = False
+                        else:
+                            raise RuntimeError
+
+                    movesByte: bytes = file.read(1)
+                    movesInt: int = int.from_bytes(movesByte, byteorder="big", signed=False)
+
+                    if movesInt < 0 or movesInt > 4:
+                        raise RuntimeError
+
+                    self._moves = movesInt
 
                     for i in range(2):
                         occupyCheckersByte: bytes = file.read(1)
