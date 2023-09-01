@@ -3,6 +3,7 @@ from typing import Tuple, List
 from geometries.rectangle import Rectangle
 from occupyBar import OccupyBar
 from triangle import Triangle
+from home import Home
 import constants
 from color import Color
 from checker import Checker
@@ -87,7 +88,8 @@ class GameField:
         if not self.isValidMove(checker.color == Color.Black, index):
             raise RuntimeError
 
-        self.triangles[checker.index].checkersCount -= 1
+        if checker.index > 0:
+            self.triangles[checker.index].checkersCount -= 1
         checker.height = self.triangles[index].checkersCount
         checker.move(index)
         self.triangles[index].checkersCount += 1
