@@ -143,12 +143,20 @@ class Application:
         result: List[int] = []
 
         for roll in self._rolls:
-            result.append((position + roll * (1 - 2 * (not self._blackToMove))) % 23)  # TODO +1 % 23
+            if not self._blackToMove and position < 12 and position + roll > 11:
+                continue
+
+            move: int = position + roll * (1 - 2 * self._blackToMove) * (1 - 2 * (position > 11))
+            if move < 0 or (not self._blackToMove and move < 12):
+                move = 11 - move
+
+            result.append(move)
+
             if self._rolls[0] == self._rolls[1]:
                 self._moved = [False]
                 break
 
-        return result
+        return [x for x in result if x < 24]
 
     def _selectValidMoves(self, index: int):
         validMoves: List[int] = self._getValidMoves(index)
