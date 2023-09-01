@@ -147,7 +147,7 @@ class Application:
                 continue
 
             move: int = position + roll * (1 - 2 * self._blackToMove) * (1 - 2 * (position > 11))
-            if move < 0 or (not self._blackToMove and move < 12):
+            if move < 0 or (not self._blackToMove and position > 11 and move < 12):
                 move = 11 - move
 
             result.append(move)
