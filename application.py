@@ -53,7 +53,7 @@ class Application:
 
                     if self.gameField.occupyBars[not self._blackToMove].checkers > 0 and self.gameField.checkerToMove is None:
                         self.gameField.checkerToMove = self.gameField.getTopChecker(-2 + self._blackToMove)
-                        self._selectValidMoves(11 + 12 * self._blackToMove)
+                        self._selectValidMoves(11 + 12 * (not self._blackToMove))
                         continue
 
                     if self._isCursorOnGeometry(self.gameField.skipButton):
@@ -77,7 +77,7 @@ class Application:
 
                                 self._selectValidMoves(triangle.index)
                             else:
-                                validMoves: List[int] = self._getValidMoves(11 + 12 * self._blackToMove
+                                validMoves: List[int] = self._getValidMoves(11 + 12 * (not self._blackToMove)
                                                                             if self.gameField.checkerToMove.index < 0
                                                                             else self.gameField.checkerToMove.index)
 
