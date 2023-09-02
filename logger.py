@@ -19,3 +19,11 @@ def logOccupy(attacker: bool, checker: int):
 
 def logSkipMove(player: bool):
     print(f"Player {'Black' if player else 'White'} skipped their move.")
+
+
+def logMoveToHome(player: bool, index: int):
+    print(f"Player {'Black' if player else 'White'} moved their checker from triangle {index} to their home.")
+
+
+def logGameEnd(player: bool):
+    print(f"Player {'Black' if player else 'White'} just won!")

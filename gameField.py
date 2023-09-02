@@ -24,12 +24,13 @@ class GameField:
 
         self.thatCubeShit: Rectangle = Rectangle(pygame.Vector2(constants.WINDOW_WIDTH * 0.9, 0),
                                                  constants.WINDOW_WIDTH * 0.1, constants.WINDOW_HEIGHT, Color.Blue)
+        self.homes: List[Home] = [Home(bool(i)) for i in range(2)]
 
         self._skipButtonBorder: Rectangle = Rectangle(pygame.Vector2(self.thatCubeShit.point.x,
                                                                      self.thatCubeShit.height / 2
                                                                      - self.thatCubeShit.width / 2),
                                                       self.thatCubeShit.width, self.thatCubeShit.width,
-                                                      Color.White)
+                                                      Color.Green)
         self.skipButton: Rectangle = Rectangle(pygame.Vector2(self._skipButtonBorder.point.x
                                                               + self.thatCubeShit.width / 18,
                                                               self._skipButtonBorder.point.y
@@ -94,6 +95,10 @@ class GameField:
         checker.move(index)
         self.triangles[index].checkersCount += 1
 
+    def moveCheckerToHome(self, checker: Checker):
+        self.triangles[checker.index].checkersCount -= 1
+        checker.moveToHome()
+
     def lockChecker(self, checker: Checker):
         self.triangles[checker.index].checkersCount -= 1
         checker.lock()
@@ -141,6 +146,10 @@ class GameField:
         for triangle in self.triangles:
             triangle.deselect()
 
+    def deselectAllHomes(self):
+        for home in self.homes:
+            home.deselect()
+
     def render(self, bgSurface: pygame.Surface, deltaTime: int):
         self.leftField.render(bgSurface)
         self.rightField.render(bgSurface)
@@ -160,6 +169,9 @@ class GameField:
 
         for side in self.rightFieldBorders:
             side.render(bgSurface)
+
+        for home in self.homes:
+            home.render(bgSurface)
 
         for triangle in self.triangles:
             triangle.render(bgSurface)

@@ -62,6 +62,9 @@ class Checker(Circle):
         self.index = index
         self.recalculateShapePosition()
 
+    def moveToHome(self):
+        self.index = -3 if self.color == Color.Black else -4
+
     def lock(self):
         self.index = -1 if self.color == Color.Black else -2
 

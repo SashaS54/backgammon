@@ -8,6 +8,7 @@ from color import Color
 from gameField import GameField
 from checker import Checker
 from geometries.geometry import Geometry
+from home import Home
 
 
 class Application:
@@ -50,11 +51,35 @@ class Application:
 
                     self.gameField.deselectAllCheckers()
                     self.gameField.deselectAllTriangles()
+                    self.gameField.deselectAllHomes()
 
                     if self.gameField.occupyBars[not self._blackToMove].checkers > 0 and self.gameField.checkerToMove is None:
                         self.gameField.checkerToMove = self.gameField.getTopChecker(-2 + self._blackToMove)
                         self._selectValidMoves(11 + 12 * (not self._blackToMove))
                         continue
+
+                    if self.gameField.checkerToMove is not None:
+                        validMoves: List[int] = self._getValidMoves(self.gameField.checkerToMove.index)
+                        home: Home = self.gameField.homes[self._blackToMove]
+
+                        if home.index in validMoves:
+                            if home.intersects(pygame.Vector2(pygame.mouse.get_pos())):
+                                logger.logMoveToHome(self._blackToMove, self.gameField.checkerToMove.index)
+                                self.gameField.moveCheckerToHome(self.gameField.checkerToMove)
+                                home.checkers += 1
+
+                                self._moved[validMoves.index(home.index)] = True
+                                self._moves -= 1
+
+                                if home.checkers == 15:
+                                    logger.logGameEnd(self._blackToMove)
+                                    pygame.quit()
+
+                                if False not in self._moved and self._moves == 0:
+                                    self._resetMove()
+
+                                self.gameField.checkerToMove = None
+                                continue
 
                     if self._isCursorOnGeometry(self.gameField.skipButton):
                         logger.logSkipMove(self._blackToMove)
@@ -150,7 +175,7 @@ class Application:
             if move < 0 or (not self._blackToMove and position > 11 and move < 12):
                 move = 11 - move
 
-            result.append(move)
+            result.append(-3 if move == 24 else move)  # TODO white team home
 
             if self._rolls[0] == self._rolls[1]:
                 self._moved = [False]
@@ -161,7 +186,12 @@ class Application:
     def _selectValidMoves(self, index: int):
         validMoves: List[int] = self._getValidMoves(index)
         for i, move in enumerate(validMoves):
-            if not self._moved[i] and self.gameField.isValidMove(self._blackToMove, move):
+            if self._moved[i]:
+                continue
+
+            if move < 0:
+                self.gameField.homes[move + 4].select()
+            elif self.gameField.isValidMove(self._blackToMove, move):
                 self.gameField.triangles[move].select()
 
     def _resetMove(self):
