@@ -168,14 +168,16 @@ class Application:
         result: List[int] = []
 
         for roll in self._rolls:
-            if not self._blackToMove and position < 12 and position + roll > 11:
+            if not self._blackToMove and position < 12 < position + roll:
                 continue
 
             move: int = position + roll * (1 - 2 * self._blackToMove) * (1 - 2 * (position > 11))
-            if move < 0 or (not self._blackToMove and position > 11 and move < 12):
+            if not self._blackToMove and move == 12 and position < 12:
+                move = -4
+            elif move < 0 or (not self._blackToMove and position > 11 and move < 12):
                 move = 11 - move
 
-            result.append(-3 if move == 24 else move)  # TODO white team home
+            result.append(-3 if move == 24 else move)
 
             if self._rolls[0] == self._rolls[1]:
                 self._moved = [False]
