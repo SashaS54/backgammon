@@ -221,6 +221,9 @@ class Application:
             for bar in self.gameField.occupyBars:
                 file.write(bar.checkers.to_bytes(1, byteorder="big", signed=False))
 
+            for home in self.gameField.homes:
+                file.write(home.checkers.to_bytes(1, byteorder="big", signed=False))
+
             for triangle in self.gameField.triangles:
                 topChecker: Checker | None = self.gameField.getTopChecker(triangle.index)
                 color: bytes = b'\x01' if topChecker is not None and topChecker.color == Color.White else b'\x00'
@@ -286,6 +289,15 @@ class Application:
                             raise RuntimeError
 
                         self.gameField.occupyBars[i].checkers = occupyCheckersInt
+
+                    for i in range(2):
+                        homeCheckersByte: bytes = file.read(1)
+                        homeCheckersInt: int = int.from_bytes(homeCheckersByte, byteorder="big", signed=False)
+
+                        if homeCheckersInt < 0 or homeCheckersInt > 15:
+                            raise RuntimeError
+
+                        self.gameField.homes[i].checkers = homeCheckersInt
 
                     for triangle in self.gameField.triangles:
                         colorByte: bytes = file.read(1)
