@@ -9,10 +9,10 @@ class Dice:
         self._images: Sequence[pygame.Surface] = ()
         self._rolls: Tuple[int, int] = (6, 6)
         self._inProcess: bool = False
-        self._canReadRolls = False
+        self._canReadRolls: int = False
 
-        self._elapsedTime: int = 1
-        self._iterations: int = 1
+        self._elapsedTime: int = 0
+        self._iterations: int = 0
         self._timeDelay: float = 0.1
         self._reset: bool = True
 
