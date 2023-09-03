@@ -1,5 +1,4 @@
 import pygame
-
 import constants
 from geometries.rectangle import Rectangle
 from color import Color
